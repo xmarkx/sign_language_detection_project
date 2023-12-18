@@ -8,7 +8,7 @@ from detector import mp_holistic, mediapipe_detection, draw_landmarks, extract_k
 
 class Collector:
     def __init__(self):
-        self.actions = ['a', 'b', 'c'] # ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+        self.actions = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
         self.no_sequences = 30
         self.sequence_length = 30
         self.data_path = os.getcwd() + '\\MP_Data'
@@ -64,14 +64,10 @@ class Collector:
                             raise IOError("Cannot Open WebCam")
                         # Read feed
                         ret, frame = cap.read()
-                        # print(frame)
-                        # print(action)
                         # Make detections
                         image, results = mediapipe_detection(frame, holistic)
-
                         # Draw landmarks
                         draw_landmarks(image, results, face=False, pose=False)
-
                         # NEW Apply wait logic
                         if frame_num == 0: 
                             cv2.putText(image, 'STARTING COLLECTION', (120,200), 
@@ -86,17 +82,14 @@ class Collector:
                                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1, cv2.LINE_AA)
                             # Show to screen
                             cv2.imshow('OpenCV Feed', image)
-
                         # NEW Export keypoints
                         keypoints = extract_keypoints(results)
                         npy_path = os.path.join(self.data_path, action, str(sequence+1), str(frame_num+1) + '.npy')
                         # print(npy_path)
                         np.save(npy_path, keypoints)
-
                         # Break gracefully
                         if cv2.waitKey(10) & 0xFF == ord('q'):
                             break
-
             cap.release()
             cv2.destroyAllWindows()
 
@@ -113,6 +106,4 @@ class Collector:
                     window.append(res)
                 sequences.append(window)
                 labels.append(label_map[action])
-        # print(np.array(sequences).shape)
-        # print(to_categorical(labels).astype(int).shape)
         return np.array(sequences), to_categorical(labels).astype(int)

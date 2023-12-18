@@ -1,6 +1,7 @@
 import collector
-import model2
-import inference2
+import detector
+from model import Model
+import inference
 import click
 from tensorflow.keras.models import load_model
 import cv2
@@ -9,10 +10,15 @@ import cv2
 @click.command()
 @click.option('-c', '--collect', is_flag=True, help='Use the --collect flag to run the data collection')
 @click.option('-t', '--train', is_flag=True, help='Use the --train flag to run the training')
-@click.option('-i', '--inference', is_flag=True, help='Use the --inference flag to run inference')
+@click.option('-i', '--run_inference', is_flag=True, help='Use the --inference flag to run inference')
+@click.option('-d', '--demo', is_flag=True, help='Use the --demo to run demo')
 
 
-def main(collect, train, inference):
+def main(collect, train, run_inference, demo):
+
+    if demo:
+        detector.demo()
+
     if collect:
         print('Starting action collection...')
         actions_to_collect = input('Provide the actions to collect (use space inbetween if multiple actions are provided): ')
@@ -29,32 +35,38 @@ def main(collect, train, inference):
         if data_choice == 'c':
             model_name = input("Please give a name to Your model: ").lower()
             model_name = model_name + ".keras"
-            model_instance = model2.Model(data=collector_instance, model_name=model_name)
+            model_instance = Model(data=collector_instance, model_name=model_name)
         elif data_choice == 'd':
-            model_instance = model2.Model()
+            model_name = input("Please give a name to Your model: ").lower()
+            model_name = model_name + ".keras"
+            model_instance = Model(model_name=model_name)
         print('Starting training...')
+        print(f'model_name: {model_instance.model_name}')
+        print(f'y_train shape: {model_instance.y_train.shape}')
+
         model_instance.train()
         model_instance.evaluate()
 
-    if inference:
+    if run_inference:
         if train and data_choice == 'c':
             model_name = model_instance.model_name
         else:
             model_choice = input("Which model do You want to run inference on ('d'efault model / custom model_name): ").lower()
             if model_choice == 'd':
-                model = model2.Model()
+                model = Model()
                 model_name = model.model_name
                 print(f'Using default model from Model.model_name: {model_name}')
             else:
-                model_name = model_choice
+                model_name = model_choice + ".keras"
+                print(f'Loaded model name: {model_name}')
 
         # here we have the model_name already
         try:
-            inference2.run_inference(model_name=model_name, collector=collector_instance)
+            inference.run_inference(model_name=model_name, num_of_classes=len(collector_instance.actions), collector=collector_instance)
         except Exception as e:
             print(e)
             print('Using the default Collector instance')
-            inference2.run_inference(model_name=model_name, collector=collector.Collector())
+            inference.run_inference(model_name=model_name, num_of_classes=len(collector.Collector().actions), collector=collector.Collector())
 
             
 if __name__ == '__main__':

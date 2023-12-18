@@ -1,0 +1,8 @@
+opencv-python
+keyboard
+numpy
+tensorflow==2.10
+mediapipe
+matplotlib
+click
+scikit-learn
