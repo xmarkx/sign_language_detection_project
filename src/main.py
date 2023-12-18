@@ -12,9 +12,12 @@ import cv2
 @click.option('-t', '--train', is_flag=True, help='Use the --train flag to run the training')
 @click.option('-i', '--run_inference', is_flag=True, help='Use the --inference flag to run inference')
 @click.option('-d', '--demo', is_flag=True, help='Use the --demo to run demo')
+@click.option('--start_folder', default=1, help='Use the --start_folder to define the starting folder name at data collection')
+@click.option('--epochs', default=1000, help='Use the --epochs to define the number of training epochs')
 
 
-def main(collect, train, run_inference, demo):
+
+def main(collect, train, run_inference, demo, start_folder, epochs):
 
     if demo:
         detector.demo()
@@ -22,7 +25,7 @@ def main(collect, train, run_inference, demo):
     if collect:
         print('Starting action collection...')
         actions_to_collect = input('Provide the actions to collect (use space inbetween if multiple actions are provided): ')
-        collector_instance = collector.Collector()        
+        collector_instance = collector.Collector(start_folder=start_folder)        
         collector_instance.actions = actions_to_collect.split()
         print(f"You provided the following actions to collect: {collector_instance.actions}, it's length is {len(collector_instance.actions)}")
         print(collector_instance.no_sequences, collector_instance.sequence_length)
@@ -44,7 +47,7 @@ def main(collect, train, run_inference, demo):
         print(f'model_name: {model_instance.model_name}')
         print(f'y_train shape: {model_instance.y_train.shape}')
 
-        model_instance.train()
+        model_instance.train(epochs=epochs)
         model_instance.evaluate()
 
     if run_inference:

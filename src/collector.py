@@ -7,35 +7,36 @@ from detector import mp_holistic, mediapipe_detection, draw_landmarks, extract_k
 
 
 class Collector:
-    def __init__(self):
+    def __init__(self, start_folder=1):
         self.actions = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
         self.no_sequences = 30
         self.sequence_length = 30
         self.data_path = os.getcwd() + '\\MP_Data'
+        self.start_folder = start_folder
 
     def folder_setup(self, actions_in=False, no_sequences_in=False):
-            """
-            actions = np.array(['hello', 'thanks', 'iloveyou'])
-            no_sequences = 30
-            sequence_length = 30
-            """
-            if not os.path.exists(self.data_path):
-                os.makedirs(self.data_path)
-            # Actions that we try to detect
-            if actions_in:
-                assert actions_in, "Please give a list of classes in string format"
-                self.actions = np.array(actions_in)
-            # Thirty videos worth of data
-            if no_sequences_in:
-                assert no_sequences_in > 0, "Please define the number (int format) of sequences / videos to record per class"
-                self.no_sequences = no_sequences_in
-
-            for action in self.actions:
-                for sequence in range(1,self.no_sequences+1):
-                    try: 
-                        os.makedirs(os.path.join(self.data_path, action, str(sequence)))
-                    except:
-                        pass
+        """
+        actions = np.array(['hello', 'thanks', 'iloveyou'])
+        no_sequences = 30
+        sequence_length = 30
+        """
+        if not os.path.exists(self.data_path):
+            os.makedirs(self.data_path)
+        # Actions that we try to detect
+        if actions_in:
+            assert actions_in, "Please give a list of classes in string format"
+            self.actions = np.array(actions_in)
+        # Thirty videos worth of data
+        if no_sequences_in:
+            assert no_sequences_in > 0, "Please define the number (int format) of sequences / videos to record per class"
+            self.no_sequences = no_sequences_in
+        for action in self.actions:
+            dirmax = np.max(np.array(os.listdir(os.path.join(self.data_path, action))).astype(int))
+            for sequence in range(1,self.no_sequences+1):
+                try: 
+                    os.makedirs(os.path.join(self.data_path, action, str(dirmax+sequence)))
+                except:
+                    pass
     
     def collect_data(self):
         cap=cv2.VideoCapture(1)
@@ -47,11 +48,8 @@ class Collector:
             print(f'collect_data actions: {self.actions}')
             # Loop through actions
             for action in self.actions:
-                print(f'for action in self.actions: {action}')
                 # Loop through sequences aka videos
-                for sequence in range(self.no_sequences):
-                    print(f'total sequences: {self.no_sequences}')
-                    print(f'for sequence in range(self.no_sequences): {sequence}')
+                for sequence in range(self.start_folder, self.start_folder+self.no_sequences):
                     # Wait for 'n' key press to start collecting frames
                     print("Press 'n' to start collecting frames for {} Video Number {}".format(action, sequence))
                     keyboard.wait('n')
