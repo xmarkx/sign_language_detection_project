@@ -3,32 +3,39 @@ import detector
 from model import Model
 import inference
 import click
-from tensorflow.keras.models import load_model
-import cv2
-
+from PIL import Image
 
 @click.command()
 @click.option('-c', '--collect', is_flag=True, help='Use the --collect flag to run the data collection')
 @click.option('-t', '--train', is_flag=True, help='Use the --train flag to run the training')
 @click.option('-i', '--run_inference', is_flag=True, help='Use the --inference flag to run inference')
 @click.option('-d', '--demo', is_flag=True, help='Use the --demo to run demo')
+@click.option('-e', '--evaluate', is_flag=True, help='Use the --evaluate to evaluate a specific model')
 @click.option('--start_folder', default=1, help='Use the --start_folder to define the starting folder name at data collection')
 @click.option('--epochs', default=1000, help='Use the --epochs to define the number of training epochs')
 
 
-
-def main(collect, train, run_inference, demo, start_folder, epochs):
+def main(collect, train, run_inference, demo, evaluate, start_folder, epochs):
 
     if demo:
         detector.demo()
 
+    if evaluate:
+        model_name = input('Please enter the models name to be evaluated: ')
+        model_name = model_name+".keras"
+        try:
+            model_instance = Model(model_name=model_name)
+            model_instance.evaluate()
+        except Exception as e:
+            print(e)
+            print('Maybe you provided an invalid model name?')
+
     if collect:
-        print('Starting action collection...')
         actions_to_collect = input('Provide the actions to collect (use space inbetween if multiple actions are provided): ')
         collector_instance = collector.Collector(start_folder=start_folder)        
         collector_instance.actions = actions_to_collect.split()
         print(f"You provided the following actions to collect: {collector_instance.actions}, it's length is {len(collector_instance.actions)}")
-        print(collector_instance.no_sequences, collector_instance.sequence_length)
+        print('Starting action collection...')
         collector_instance.folder_setup(actions_in=collector_instance.actions, no_sequences_in=collector_instance.no_sequences)
         collector_instance.collect_data()
 
@@ -44,8 +51,6 @@ def main(collect, train, run_inference, demo, start_folder, epochs):
             model_name = model_name + ".keras"
             model_instance = Model(model_name=model_name)
         print('Starting training...')
-        print(f'model_name: {model_instance.model_name}')
-        print(f'y_train shape: {model_instance.y_train.shape}')
 
         model_instance.train(epochs=epochs)
         model_instance.evaluate()
@@ -56,8 +61,9 @@ def main(collect, train, run_inference, demo, start_folder, epochs):
         else:
             model_choice = input("Which model do You want to run inference on ('d'efault model / custom model_name): ").lower()
             if model_choice == 'd':
-                model = Model()
-                model_name = model.model_name
+                model_name = "full_alpha_model.keras"
+                # model = Model()
+                # model_name = model.model_name
                 print(f'Using default model from Model.model_name: {model_name}')
             else:
                 model_name = model_choice + ".keras"
@@ -65,6 +71,8 @@ def main(collect, train, run_inference, demo, start_folder, epochs):
 
         # here we have the model_name already
         try:
+            image = Image.open('signs.jpg')
+            image.show()
             inference.run_inference(model_name=model_name, num_of_classes=len(collector_instance.actions), collector=collector_instance)
         except Exception as e:
             print(e)

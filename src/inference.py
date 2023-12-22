@@ -37,7 +37,6 @@ def run_inference(model_name, num_of_classes, collector=Collector()):
             ret, frame = cap.read()
             # Make detections
             image, results = mediapipe_detection(frame, holistic)
-            print(results)
 
             # Draw landmarks
             draw_landmarks(image, results, styled=True, face=False, pose=False, left_hand=True, right_hand=True)
@@ -49,7 +48,6 @@ def run_inference(model_name, num_of_classes, collector=Collector()):
 
             if len(sequence) == 30:
                 res = model.predict(np.expand_dims(sequence, axis=0))[0]
-                print(collector.actions[np.argmax(res)])
                 predictions.append(np.argmax(res))
 
 

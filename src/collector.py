@@ -7,7 +7,7 @@ from detector import mp_holistic, mediapipe_detection, draw_landmarks, extract_k
 
 
 class Collector:
-    def __init__(self, start_folder=1):
+    def __init__(self, start_folder=0):
         self.actions = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
         self.no_sequences = 30
         self.sequence_length = 30
@@ -31,11 +31,13 @@ class Collector:
             assert no_sequences_in > 0, "Please define the number (int format) of sequences / videos to record per class"
             self.no_sequences = no_sequences_in
         for action in self.actions:
-            dirmax = np.max(np.array(os.listdir(os.path.join(self.data_path, action))).astype(int))
-            for sequence in range(1,self.no_sequences+1):
+            if self.start_folder != 1:
+                dirmax = np.max(np.array(os.listdir(os.path.join(self.data_path, action))).astype(int))
+            for sequence in range(self.no_sequences):
                 try: 
                     os.makedirs(os.path.join(self.data_path, action, str(dirmax+sequence)))
-                except:
+                except Exception as e:
+                    print(f"Something went wrong with making the directory: {e}. Passing.")
                     pass
     
     def collect_data(self):
@@ -55,7 +57,6 @@ class Collector:
                     keyboard.wait('n')
                     # Loop through video length aka sequence length
                     for frame_num in range(self.sequence_length):
-                        print(f'for frame_num in range(self.sequence_length): {frame_num}')
                         if not cap.isOpened():
                             cap=cv2.VideoCapture(0)
                         if not cap.isOpened():
@@ -76,14 +77,13 @@ class Collector:
                             cv2.imshow('OpenCV Feed', image)
                             cv2.waitKey(1000)
                         else: 
-                            cv2.putText(image, 'Collecting frames for {} Video Number {}'.format(action, sequence+1), (15,12), 
+                            cv2.putText(image, 'Collecting frames for {} Video Number {}'.format(action, sequence), (15,12), 
                                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1, cv2.LINE_AA)
                             # Show to screen
                             cv2.imshow('OpenCV Feed', image)
                         # NEW Export keypoints
                         keypoints = extract_keypoints(results)
-                        npy_path = os.path.join(self.data_path, action, str(sequence+1), str(frame_num+1) + '.npy')
-                        # print(npy_path)
+                        npy_path = os.path.join(self.data_path, action, str(sequence), str(frame_num) + '.npy')
                         np.save(npy_path, keypoints)
                         # Break gracefully
                         if cv2.waitKey(10) & 0xFF == ord('q'):
@@ -99,7 +99,7 @@ class Collector:
             for sequence in np.array(os.listdir(os.path.join(self.data_path, action))).astype(int):
                 window = []
                 for frame_num in range(self.sequence_length):
-                    res = np.load(os.path.join(self.data_path, action, str(sequence), "{}.npy".format(frame_num+1)))
+                    res = np.load(os.path.join(self.data_path, action, str(sequence), "{}.npy".format(frame_num)))
                     res = res.flatten()
                     window.append(res)
                 sequences.append(window)

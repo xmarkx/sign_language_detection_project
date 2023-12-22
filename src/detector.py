@@ -1,6 +1,5 @@
 import mediapipe as mp
 import cv2
-import os
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -84,9 +83,4 @@ def extract_keypoints(results, pose_cap=False, face_cap=False, left_hand_cap=Tru
     if right_hand_cap:
         rh = np.array([[res.x, res.y, res.z] for res in results.right_hand_landmarks.landmark]).flatten() if results.right_hand_landmarks else np.zeros(21*3)
         to_return.extend(rh)
-    # print(f'lh.shape: {lh.shape}')
-    # print(f'rh.shape: {rh.shape}')
-    # print(f'to_return: {to_return}')
-    # print(f'to_return.shape: {np.concatenate([to_return]).shape}')
     return np.concatenate([to_return])
-    # SHOULD store this as self.kp? #
