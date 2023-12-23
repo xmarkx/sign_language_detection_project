@@ -2,7 +2,7 @@
 
 The aim of this project is to create a basic classifier which can detect different signs from the American Sign Language alphabet. The classifier is not at all perfect but it is a great example for the use of the Mediapipe library and the Long-Short Term Memory (LSTM) model architecture.
 
-The project is inspired by and based on the sign language detection videos on the Computer Vision Engineer and Nicholas Renotte Youtube channels.
+The project is inspired by and based on the sign language detection videos on the Computer Vision Engineer and Nicholas Renotte Youtube channels.  
 Computer Vision Engineer: https://www.youtube.com/watch?v=MJCSjXepaAM
 Nicholas Renotte: https://www.youtube.com/watch?v=doDUihpj6ro
 
@@ -37,7 +37,7 @@ If we run the full pipeline, collecting (`-c`) data and training a model (`-t`) 
 Otherwise we have the choice to use the default model (full_alpha_model.keras) trained on the 26 alphabet characters by pressing `d`, or choosing a custom model by pressing `c`.
 
 
-__============================ Data collection and model training is needed if using any other arguments than `-d` or `-i` ============================__
+__=== Data collection and model training is needed if using any other arguments than `-d` or `-i` ===__
 
 __`-c` or `--collect`__: Use the --collect flag to run the data collection
 `python src\main.py -c`
