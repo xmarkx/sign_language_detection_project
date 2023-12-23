@@ -61,3 +61,6 @@ __`-e` or `--evaluate`__: Use the --evaluate to evaluate a specific model
 `python src\main.py -e`
 
 Evaluates the selected model on the alphabet characters. In case of new action classes are collected the Collector.actions attribute has to be updated in the code in collector.py.
+
+Running full pipeline: data collection starting from folder number 11 → model training with 2000 epochs → inference:  
+`python src\main.py -c --start_folder 11 -t --epochs 2000 -i`
