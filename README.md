@@ -25,12 +25,12 @@ Change the directory to the project folder
 ### 3. Run main.py
 Callable arguments:
 
-__`-d` or `--demo`__: Use the --demo to run demo
-Runs the hand keypoint detection demo, no sign language detection.
+__`-d` or `--demo`__: Use the --demo to run demo  
+Runs the hand keypoint detection demo, no sign language detection.  
 `python src\main.py -d`
 
-__`-i` or `--run_inference`__: Use the --run_inference flag to run inference
-Runs the model inference with sign language detection.
+__`-i` or `--run_inference`__: Use the --run_inference flag to run inference  
+Runs the model inference with sign language detection.  
 `python src\main.py -i`
 
 If we run the full pipeline, collecting (`-c`) data and training a model (`-t`) on the collected data, the inference is done on this newly trained model automatically.
@@ -39,25 +39,25 @@ Otherwise we have the choice to use the default model (full_alpha_model.keras) t
 
 __====== Data collection and model training is needed if using any other arguments than `-d` or `-i` ======__
 
-__`-c` or `--collect`__: Use the --collect flag to run the data collection
+__`-c` or `--collect`__: Use the --collect flag to run the data collection  
 `python src\main.py -c`
 
 We can define the different classification classes we want to collect. We can provide multiple action classes to collect, but the classes have to be separated with a space inbetween.
 Example: Provide the actions to collect (use space inbetween if multiple actions are provided): a b c d → results in 4 classes to collect: class 'a', 'b', 'c' and 'd'.
 
-When collecting, we can also call the __`--start_folder`__ argument.
+When collecting, we can also call the __`--start_folder`__ argument.  
 Example: `--start_folder 10` → Defines the starting folder number to be 10 at data collection. Useful if we collected 10 samples and want to collect more without overwriting the existing 10 samples.
 
-__`-t` or `--train`__: Use the --train flag to run the training
+__`-t` or `--train`__: Use the --train flag to run the training  
 `python src\main.py -t`
 
 If data collection is also done in the same run, we have the choice to train the model on the newly collected data by inputting 'c'. The model name needs to also be defined.
 By inputting 'd' we can train a model on existing data found in the MP_Data folder. The model name needs to also be defined.
 
-When training, we can also call the __`--epochs`__ argument.
+When training, we can also call the __`--epochs`__ argument.  
 `--epochs` → Defines the number of training epochs.
 
-__`-e` or `--evaluate`__: Use the --evaluate to evaluate a specific model
+__`-e` or `--evaluate`__: Use the --evaluate to evaluate a specific model  
 `python src\main.py -e`
 
 Evaluates the selected model on the alphabet characters. In case of new action classes are collected the Collector.actions attribute has to be updated in the code in collector.py.
