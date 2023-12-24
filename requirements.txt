@@ -1,8 +1,11 @@
 opencv-python
 keyboard
 numpy
-tensorflow==2.10
+tensorflow
 mediapipe
 matplotlib
 click
 scikit-learn
+seaborn
+pillow
+pandas

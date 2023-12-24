@@ -6,13 +6,13 @@ import click
 from PIL import Image
 
 @click.command()
-@click.option('-c', '--collect', is_flag=True, help='Use the --collect flag to run the data collection')
-@click.option('-t', '--train', is_flag=True, help='Use the --train flag to run the training')
-@click.option('-i', '--run_inference', is_flag=True, help='Use the --inference flag to run inference')
 @click.option('-d', '--demo', is_flag=True, help='Use the --demo to run demo')
-@click.option('-e', '--evaluate', is_flag=True, help='Use the --evaluate to evaluate a specific model')
-@click.option('--start_folder', default=1, help='Use the --start_folder to define the starting folder name at data collection')
+@click.option('-i', '--run_inference', is_flag=True, help='Use the --inference flag to run inference')
+@click.option('-c', '--collect', is_flag=True, help='Use the --collect flag to run the data collection')
+@click.option('--start_folder', default=1, help='Use the --start_folder to define the starting folder number at data collection')
+@click.option('-t', '--train', is_flag=True, help='Use the --train flag to run the training')
 @click.option('--epochs', default=1000, help='Use the --epochs to define the number of training epochs')
+@click.option('-e', '--evaluate', is_flag=True, help='Use the --evaluate to evaluate a specific model')
 
 
 def main(collect, train, run_inference, demo, evaluate, start_folder, epochs):
